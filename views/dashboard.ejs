@@ -15,296 +15,306 @@
     <%- include('partials/header', { page: 'dashboard', isAuthenticated: isAuthenticated }) %>
 
     <div class="dashboard-container">
-        <div class="dashboard-header">
-            <div>
-                <h1>Bienvenido a Austra</h1>
-                <p style="color: var(--text-secondary); margin-top: 0.5rem;">Tu resumen de actividad reciente</p>
+
+        <!-- Top greeting bar -->
+        <div class="dash-greeting">
+            <div class="dash-greeting-left">
+                <div class="avatar-wrap">
+                    <img id="userAvatar" class="user-avatar" src="/images/default-avatar.png" alt="Avatar">
+                    <div class="avatar-spinner" id="avatarSpinner"><div class="spinner"></div></div>
+                </div>
+                <div class="greeting-text">
+                    <p class="greeting-sub" id="greetingTime">Bienvenido</p>
+                    <h1 class="greeting-name" id="greetingName">Cargando...</h1>
+                </div>
             </div>
-            <div class="user-info">
-                <div class="avatar-container">
-                    <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
-                    <div class="avatar-spinner" id="avatarSpinner">
-                        <div class="spinner"></div>
-                    </div>
+            <div class="dash-greeting-right">
+                <div class="topbar-pill" id="topbarDateTime">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span id="currentDateTime">--</span>
                 </div>
-                <div class="user-details">
-                    <h3 id="userName">Cargando...</h3>
-                    <p id="userEmail">usuario@ejemplo.com</p>
-                </div>
-                <button class="notifications-btn" onclick="openNotificationsModal()">
-                    🔔
-                    <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                <button class="notif-btn" id="notifBtn" onclick="openNotificationsModal()" title="Notificaciones">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <span class="notif-badge" id="notifBadge" style="display:none">0</span>
                 </button>
             </div>
         </div>
 
-        <div class="dashboard-info-bars">
-            <div class="dashboard-datetime-bar">
-                <span class="datetime-icon">🕒</span>
-                <span id="currentDateTime">Cargando...</span>
-                <span class="datetime-separator">•</span>
-                <span id="timezoneInfo">Montevideo (UTC-3)</span>
-                <span class="datetime-separator">•</span>
-                <span id="weekInfo">Semana: --</span>
+        <!-- Widget grid -->
+        <div class="widget-grid">
+
+            <!-- CLIMA widget -->
+            <div class="widget widget-clima" id="widgetClima">
+                <div class="widget-header">
+                    <div class="widget-icon widget-icon-clima">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>
+                    </div>
+                    <span class="widget-label">CLIMA</span>
+                    <span class="widget-location">Montevideo</span>
+                </div>
+                <div class="widget-body">
+                    <div class="clima-main" id="climaMain">
+                        <span class="clima-emoji" id="climaEmoji">--</span>
+                        <div class="clima-info">
+                            <span class="clima-temp" id="climaTemp">--°</span>
+                            <span class="clima-desc" id="climaDesc">Cargando...</span>
+                        </div>
+                    </div>
+                    <div class="clima-meta" id="climaMeta">
+                        <span id="climaHumidity">Humedad --</span>
+                        <span id="climaWind">Viento -- km/h</span>
+                        <span id="climaFeels">ST --°</span>
+                    </div>
+                    <div class="clima-forecast" id="climaForecast">
+                        <div class="forecast-loading">Cargando pronóstico...</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="dashboard-weather-bar">
-                <span id="weatherIcon">🌦️</span>
-                <span id="currentWeather">Cargando clima...</span>
-                <span class="weather-separator">•</span>
-                <span id="weatherMeta">Montevideo, Uruguay</span>
+            <!-- COTIZACIONES widget -->
+            <div class="widget widget-cotiz" id="widgetCotiz">
+                <div class="widget-header">
+                    <div class="widget-icon widget-icon-cotiz">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                    <span class="widget-label">COTIZACIONES</span>
+                    <button class="widget-action-btn" onclick="openCurrencyModal()" title="Convertir">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                    </button>
+                </div>
+                <div class="widget-body">
+                    <div class="cotiz-grid" id="cotizGrid">
+                        <div class="cotiz-loading">Cargando cotizaciones...</div>
+                    </div>
+                    <div class="btc-row" id="btcRow">
+                        <span class="btc-label">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L10.5 21m1.267-1.911-1.267-4.764m0 0c-4.924-.869-6.14 6.025-1.215 6.894m1.215-6.894L13.5 3m-3.033 9.414L9.25 7.5"/></svg>
+                            BTC
+                        </span>
+                        <span class="btc-price" id="btcPrice">--</span>
+                        <span class="btc-change" id="btcChange">--</span>
+                    </div>
+                    <p class="widget-footer-note">BROU / BCU · <a href="/exchange-rates" style="color:var(--accent)">Ver todo</a></p>
+                </div>
+            </div>
+
+            <!-- ASISTENTE IA widget -->
+            <div class="widget widget-ai" id="widgetAI">
+                <div class="widget-header">
+                    <div class="widget-icon widget-icon-ai">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+                    </div>
+                    <span class="widget-label">ASISTENTE IA</span>
+                    <a href="/assistant" class="widget-link-btn">Abrir</a>
+                </div>
+                <div class="widget-body">
+                    <div class="ai-last-msg" id="aiLastMsg">
+                        <p class="ai-last-text">¿En qué te puedo ayudar hoy?</p>
+                    </div>
+                    <div class="ai-input-row">
+                        <input type="text" id="aiQuickInput" class="ai-input" placeholder="Preguntá algo..." maxlength="200">
+                        <button class="ai-send-btn" id="aiSendBtn" onclick="sendQuickAIMessage()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOTICIAS widget -->
+            <div class="widget widget-news" id="widgetNews">
+                <div class="widget-header">
+                    <div class="widget-icon widget-icon-news">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+                    </div>
+                    <span class="widget-label">NOTICIAS</span>
+                    <a href="/news" class="widget-link-btn">Ver más</a>
+                </div>
+                <div class="widget-body">
+                    <ul class="news-list" id="newsList">
+                        <li class="news-loading">Cargando noticias...</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- FORO widget -->
+            <div class="widget widget-forum" id="widgetForum">
+                <div class="widget-header">
+                    <div class="widget-icon widget-icon-forum">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <span class="widget-label">FORO</span>
+                    <a href="/forum-austra" class="widget-link-btn">Ver más</a>
+                </div>
+                <div class="widget-body">
+                    <ul class="forum-list" id="forumList">
+                        <li class="forum-loading">Cargando discusiones...</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- BUSES widget -->
+            <div class="widget widget-buses" id="widgetBuses">
+                <div class="widget-header">
+                    <div class="widget-icon widget-icon-buses">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    </div>
+                    <span class="widget-label">TRANSPORTE STM</span>
+                    <span class="widget-coming-soon">Próximamente</span>
+                </div>
+                <div class="widget-body">
+                    <div class="buses-placeholder">
+                        <div class="buses-placeholder-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-4.3c.042-.41.1-.857.1-1.3V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7c0 .6.4 1 1 1h15"/><circle cx="6.5" cy="18" r="2"/><circle cx="16.5" cy="18" r="2"/><path d="M8.5 18h7"/></svg>
+                        </div>
+                        <p>Información de líneas STM en tiempo real</p>
+                        <span class="badge-soon">En desarrollo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CENTINEL widget -->
+            <div class="widget widget-centinel" id="widgetCentinel">
+                <div class="widget-header">
+                    <div class="widget-icon widget-icon-centinel">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
+                    <span class="widget-label">ALERTAS</span>
+                    <a href="/centinel" class="widget-link-btn">Ver todas</a>
+                </div>
+                <div class="widget-body">
+                    <ul class="centinel-list" id="centinelList">
+                        <li class="centinel-loading">Cargando alertas...</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PERFIL widget -->
+            <div class="widget widget-profile" id="widgetProfile">
+                <div class="widget-header">
+                    <div class="widget-icon widget-icon-profile">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <span class="widget-label">MI PERFIL</span>
+                </div>
+                <div class="widget-body" id="profileWidgetBody">
+                    <div class="profile-loading">Cargando...</div>
+                </div>
+            </div>
+
+        </div><!-- /widget-grid -->
+
+        <!-- Coming soon bar -->
+        <div class="coming-soon-bar">
+            <span class="coming-soon-title">Próximamente en Austra</span>
+            <div class="coming-soon-tags">
+                <span>Ofertas laborales</span>
+                <span>Facturación electrónica</span>
+                <span>Adopciones y rescates</span>
+                <span>Campañas solidarias</span>
+                <span>Perdidos y encontrados</span>
+                <span>Surlink expandido</span>
+                <span>Consulta de patentes</span>
             </div>
         </div>
 
-        <section class="dashboard-insights">
-            <div class="insight-card">
-                <header>
-                    <span class="icon">💱</span>
-                    <h3>Divisas</h3>
-                </header>
-                <ul class="insight-list currency-grid" id="currencyRates">
-                    <li>USD <strong id="usdValue">Cargando...</strong></li>
-                    <li>EUR <strong id="eurValue">Cargando...</strong></li>
-                    <li>ARS <strong id="arsValue">Cargando...</strong></li>
-                    <li>BRL <strong id="brlValue">Cargando...</strong></li>
-                    <li>GBP <strong id="gbpValue">Cargando...</strong></li>
-                    <li>CHF <strong id="chfValue">Cargando...</strong></li>
-                    <li>UI <strong id="uiValue">Cargando...</strong></li>
-                    <li>UR <strong id="urValue">Cargando...</strong></li>
-                </ul>
-                <p class="insight-meta" id="bcuUpdateTime" style="margin-top: 0.75rem; font-size: 0.7rem;">Última actualización: --</p>
-                <p class="insight-meta" id="bcuError" style="color: #dc2626; margin-top: 0.25rem; display: none; font-size: 0.7rem;"></p>
-                <button class="insight-btn" onclick="openCurrencyModal()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.25rem;">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 6v6l4 2"></path>
-                    </svg>
-                    Convertir divisas
-                </button>
-                <p class="insight-meta card-footer">
-                    Datos de <a href="https://www.brou.com.uy/cotizaciones" target="_blank" rel="noopener noreferrer" style="color: var(--primary-color); text-decoration: underline;">BROU</a> / <a href="https://www.bcu.gub.uy/Estadisticas-e-Indicadores/Paginas/Cotizaciones.aspx" target="_blank" rel="noopener noreferrer" style="color: var(--primary-color); text-decoration: underline;">BCU</a>
-                </p>
-            </div>
-            <div class="insight-card">
-                <header>
-                    <span class="icon">₿</span>
-                    <h3>Bitcoin</h3>
-                </header>
-                <div style="flex: 1;">
-                    <p class="insight-value" id="bitcoinPrice">Cargando...</p>
-                    <p class="insight-meta" id="bitcoinChange">Cambio 15s: --</p>
-                </div>
-                <p class="insight-meta card-footer">
-                    Datos de <a href="https://www.coingecko.com" target="_blank" rel="noopener noreferrer" style="color: var(--primary-color); text-decoration: underline;">CoinGecko</a>
-                </p>
-            </div>
-            <div class="insight-card" id="creditProfileCard">
-                <header>
-                    <span class="icon">💳</span>
-                    <h3>Perfil Crediticio</h3>
-                </header>
-                <div id="creditProfileContent">
-                    <p class="insight-meta" style="text-align: center; padding: 1rem;">Cargando...</p>
+        <!-- Donation bar -->
+        <div class="donation-bar">
+            <div class="donation-bar-info">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <div>
+                    <strong>Apoya Austra</strong>
+                    <span>Tu donación mantiene la plataforma gratuita</span>
                 </div>
             </div>
-            <div class="insight-card" id="cvCard">
-                <header>
-                    <span class="icon">📄</span>
-                    <h3>Mi CV</h3>
-                </header>
-                <div id="cvContent">
-                    <p class="insight-meta" style="text-align: center; padding: 1rem;">Cargando...</p>
-                </div>
-            </div>
-        </section>
-
-        <div class="dashboard-donation-bar">
-            <div class="donation-content">
-                <div class="donation-info">
-                    <span class="donation-icon">💝</span>
-                    <div>
-                        <h3>Apoya Austra</h3>
-                        <p>Tu donación ayuda a mantener la plataforma gratuita y en constante mejora</p>
-                    </div>
-                </div>
-                <div class="donation-actions">
-                    <a href="https://paypal.me/xplice?locale.x=es_XC&country.x=UY"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="donation-btn-bar">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                            <path d="M2 17l10 5 10-5"></path>
-                            <path d="M2 12l10 5 10-5"></path>
-                        </svg>
-                        Donar con PayPal
-                    </a>
-                    <a href="/donadores" class="donors-link-bar">Ver muro →</a>
-                </div>
+            <div class="donation-bar-actions">
+                <a href="https://paypal.me/xplice?locale.x=es_XC&country.x=UY" target="_blank" rel="noopener noreferrer" class="donation-btn">Donar con PayPal</a>
+                <a href="/donadores" class="donation-link">Ver muro &rarr;</a>
             </div>
         </div>
 
-        <div class="dashboard-grid">
-            <!-- Centinel Alerts Card -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h2><span class="icon">🚨</span> Alertas de Centinel</h2>
-                </div>
-                <div class="item-list" id="centinelList">
-                    <div class="loading">Cargando alertas...</div>
-                </div>
-                <a href="/centinel" class="view-all-btn">Ver todas</a>
-            </div>
-
-            <!-- Surlink Posts Card -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h2><span class="icon">🏠</span> Nuevos en Surlink</h2>
-                </div>
-                <div class="item-list" id="surlinkList">
-                    <div class="empty-state">
-                        <div class="icon">🚧</div>
-                        <p>Próximamente</p>
-                    </div>
-                </div>
-                <a href="/surlink" class="view-all-btn">Ver todas</a>
-            </div>
-
-            <!-- Forum Threads Card -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h2><span class="icon">💬</span> Foro Austra</h2>
-                </div>
-                <div class="item-list" id="forumList">
-                    <div class="loading">Cargando discusiones...</div>
-                </div>
-                <a href="/forum-austra" class="view-all-btn">Ver todas</a>
-            </div>
-        </div>
-
-        <div class="dashboard-coming-soon-bar">
-            <div class="coming-soon-content">
-                <div class="coming-soon-header">
-                    <h3>Próximamente en Austra</h3>
-                </div>
-                <div class="coming-soon-grid">
-                    <div class="coming-soon-item">
-                        <strong>Ofertas laborales</strong>
-                    </div>
-                    <div class="coming-soon-item">
-                        <strong>Facturación electrónica</strong>
-                    </div>
-                    <div class="coming-soon-item">
-                        <strong>Publicar adopciones y rescates</strong>
-                    </div>
-                    <div class="coming-soon-item">
-                        <strong>Campañas solidarias</strong>
-                    </div>
-                    <div class="coming-soon-item">
-                        <strong>Perdidos y encontrados</strong>
-                    </div>
-                    <div class="coming-soon-item">
-                        <strong>Surlink expandido (autos y casas)</strong>
-                    </div>
-                    <div class="coming-soon-item">
-                        <strong>Consulta de patentes</strong>
-                    </div>
-                    <div class="coming-soon-item">
-                        <strong>Chatbot con GPT-5</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </div><!-- /dashboard-container -->
 
     <!-- Notifications Modal -->
     <div id="notificationsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>🔔 Notificaciones</h2>
-                <button class="close-btn" onclick="closeNotificationsModal()">×</button>
+                <h2>Notificaciones</h2>
+                <button class="close-btn" onclick="closeNotificationsModal()" aria-label="Cerrar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
             </div>
-            <div id="notificationsList">
-                <div class="loading">Cargando notificaciones...</div>
-            </div>
+            <div id="notificationsList"></div>
             <button class="mark-all-read-btn" onclick="markAllAsRead()">Marcar todas como leídas</button>
         </div>
     </div>
 
     <!-- Currency Conversion Modal -->
     <div id="currencyModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-content modal-content-sm">
             <div class="modal-header">
-                <h2>💱 Convertir Divisas</h2>
-                <button class="close-btn" onclick="closeCurrencyModal()">×</button>
+                <h2>Convertir Divisas</h2>
+                <button class="close-btn" onclick="closeCurrencyModal()" aria-label="Cerrar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
             </div>
-            <div style="padding: 1.5rem;">
+            <div class="modal-body">
                 <div class="currency-converter">
-                    <div class="converter-input-group">
-                        <label for="fromAmount">Cantidad</label>
-                        <input type="number" id="fromAmount" class="converter-input" placeholder="0.00" value="1" min="0" step="0.01">
+                    <div class="conv-row">
+                        <div class="conv-group">
+                            <label for="fromAmount">Cantidad</label>
+                            <input type="number" id="fromAmount" class="conv-input" placeholder="0.00" value="1" min="0" step="0.01">
+                        </div>
+                        <div class="conv-group">
+                            <label for="fromCurrency">De</label>
+                            <select id="fromCurrency" class="conv-select">
+                                <option value="UYU" selected>UYU - Peso Uruguayo</option>
+                                <option value="USD">USD - Dólar</option>
+                                <option value="EUR">EUR - Euro</option>
+                                <option value="ARS">ARS - Peso Argentino</option>
+                                <option value="BRL">BRL - Real Brasileño</option>
+                                <option value="GBP">GBP - Libra Esterlina</option>
+                                <option value="CHF">CHF - Franco Suizo</option>
+                                <option value="BTC">BTC - Bitcoin</option>
+                                <option value="UI">UI - Unidad Indexada</option>
+                                <option value="UR">UR - Unidad Reajustable</option>
+                            </select>
+                        </div>
                     </div>
-
-                    <div class="converter-select-group">
-                        <label for="fromCurrency">De</label>
-                        <select id="fromCurrency" class="converter-select">
-                            <option value="USD">USD - Dólar Estadounidense</option>
-                            <option value="EUR">EUR - Euro</option>
-                            <option value="ARS">ARS - Peso Argentino</option>
-                            <option value="BRL">BRL - Real Brasileño</option>
-                            <option value="GBP">GBP - Libra Esterlina</option>
-                            <option value="CHF">CHF - Franco Suizo</option>
-                            <option value="BTC">BTC - Bitcoin</option>
-                            <option value="UYU" selected>UYU - Peso Uruguayo</option>
-                            <option value="UI">UI - Unidad Indexada</option>
-                            <option value="UR">UR - Unidad Reajustable</option>
-                        </select>
-                    </div>
-
-                    <div style="text-align: center; margin: 1rem 0;">
+                    <div class="conv-swap-row">
                         <button class="swap-btn" onclick="swapCurrencies()" title="Intercambiar">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <polyline points="19 12 12 19 5 12"></polyline>
-                            </svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
                         </button>
                     </div>
-
-                    <div class="converter-select-group">
+                    <div class="conv-group">
                         <label for="toCurrency">A</label>
-                        <select id="toCurrency" class="converter-select">
-                            <option value="USD" selected>USD - Dólar Estadounidense</option>
+                        <select id="toCurrency" class="conv-select">
+                            <option value="USD" selected>USD - Dólar</option>
+                            <option value="UYU">UYU - Peso Uruguayo</option>
                             <option value="EUR">EUR - Euro</option>
                             <option value="ARS">ARS - Peso Argentino</option>
                             <option value="BRL">BRL - Real Brasileño</option>
                             <option value="GBP">GBP - Libra Esterlina</option>
                             <option value="CHF">CHF - Franco Suizo</option>
                             <option value="BTC">BTC - Bitcoin</option>
-                            <option value="UYU">UYU - Peso Uruguayo</option>
                             <option value="UI">UI - Unidad Indexada</option>
                             <option value="UR">UR - Unidad Reajustable</option>
                         </select>
                     </div>
-
-                    <div class="converter-result">
-                        <div class="result-label">Resultado</div>
-                        <div class="result-value" id="conversionResult">0.00</div>
-                        <div class="result-rate" id="conversionRate">1 UYU = 0.0234 USD</div>
+                    <div class="conv-result">
+                        <div class="conv-result-label">Resultado</div>
+                        <div class="conv-result-value" id="conversionResult">--</div>
+                        <div class="conv-result-rate" id="conversionRate">&nbsp;</div>
                     </div>
-
-                    <div class="converter-info">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                        <span>Tasas de referencia - Actualizado: <span id="ratesUpdateTime">hoy</span></span>
-                    </div>
+                    <p class="conv-note">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        Tasas de referencia BROU/BCU · Actualizado: <span id="ratesUpdateTime">--</span>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
+    <%- include('partials/scroll-to-top') %>
     <%- include('partials/footer') %>
 
     <script src="/js/dashboard.js"></script>
