@@ -1,12 +1,8 @@
 import express from 'express';
 import https from 'https';
-import Incident from '../models/Incident.js';
-import SurlinkListing from '../models/SurlinkListing.js';
 import ForumThread from '../models/ForumThread.js';
 import Notification from '../models/Notification.js';
 import User from '../models/User.js';
-import CreditProfileRequest from '../models/CreditProfileRequest.js';
-import CVDocument from '../models/CVDocument.js';
 import { requireAuth, getAuthenticatedUser } from '../config/auth0.js';
 import { getCurrentRates } from '../services/bcuService.js';
 import { getCurrentPrice } from '../services/bitcoinService.js';
@@ -243,37 +239,6 @@ router.get('/dashboard/data', requireAuth, async (req, res, next) => {
       // Continue without exchange rates if they fail to load
     }
 
-    // Get latest incidents (Centinel alerts) - last 5
-    let incidents = [];
-    try {
-      incidents = await Incident.find({
-        status: { $in: ['verified', 'pending'] },
-        hidden: false
-      })
-        .sort({ createdAt: -1 })
-        .limit(5)
-        .select('type severity location description createdAt neighborhoodName')
-        .lean();
-    } catch (error) {
-      console.error('Error fetching incidents for dashboard:', error.message);
-      // Continue with empty incidents array
-    }
-
-    // Get latest Surlink posts - last 5
-    let surlinkPosts = [];
-    try {
-      surlinkPosts = await SurlinkListing.find({
-        status: 'active'
-      })
-        .sort({ createdAt: -1 })
-        .limit(5)
-        .select('title category price.amount price.currency location.city media createdAt')
-        .lean();
-    } catch (error) {
-      console.error('Error fetching Surlink posts for dashboard:', error.message);
-      // Continue with empty posts array
-    }
-
     // Get latest forum threads - last 5
     let forumThreads = [];
     try {
@@ -312,107 +277,6 @@ router.get('/dashboard/data', requireAuth, async (req, res, next) => {
       // Continue with empty notifications
     }
 
-    // Get credit profile status
-    let creditProfile = null;
-    try {
-      // First check for active (non-deleted) requests
-      const activeRequests = await CreditProfileRequest.find({
-        uid: user.uid,
-        status: { $ne: 'eliminada' }
-      })
-        .sort({ requestedAt: -1 })
-        .limit(1)
-        .lean();
-
-      if (activeRequests.length > 0) {
-        const request = activeRequests[0];
-        creditProfile = {
-          status: request.status,
-          requestedAt: request.requestedAt,
-          generatedAt: request.generatedAt,
-          creditScore: request.creditScore,
-          bcuRating: request.bcuRating,
-          totalDebt: request.totalDebt,
-          hasData: request.status === 'generada' && request.profileData !== null
-        };
-      } else {
-        // Check if there's a deleted request with waiting period
-        const deletedRequest = await CreditProfileRequest.findOne({
-          uid: user.uid,
-          status: 'eliminada',
-          deletedByUser: true,
-          deletedAt: { $ne: null }
-        }).sort({ deletedAt: -1 }).lean();
-
-        if (deletedRequest && deletedRequest.deletedAt) {
-          const daysSinceDeletion = Math.floor((Date.now() - new Date(deletedRequest.deletedAt).getTime()) / (1000 * 60 * 60 * 24));
-          const daysRemaining = Math.max(0, 30 - daysSinceDeletion);
-
-          if (daysRemaining > 0) {
-            creditProfile = {
-              status: 'eliminada',
-              deletedAt: deletedRequest.deletedAt,
-              daysRemaining: daysRemaining
-            };
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching credit profile:', error.message);
-      // Continue without credit profile if it fails to load
-    }
-
-    // Get CV data
-    let cvData = null;
-    try {
-      const cv = await CVDocument.findOne({ userId: user.uid }).lean();
-
-      if (cv) {
-        const isPremium = user.roles?.premium || false;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        const lastGenDate = cv.lastGenerationDate ? new Date(cv.lastGenerationDate) : null;
-        let generationsUsed = 0;
-        let canGenerate = true;
-
-        if (isPremium) {
-          // Premium: 3 per day
-          if (lastGenDate) {
-            lastGenDate.setHours(0, 0, 0, 0);
-            // If last generation was today, use the count, otherwise it's 0
-            if (today.getTime() === lastGenDate.getTime()) {
-              generationsUsed = cv.generationCount || 0;
-            }
-          }
-        } else {
-          // Free: 1 per week
-          if (lastGenDate) {
-            const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-            canGenerate = lastGenDate < oneWeekAgo;
-            generationsUsed = canGenerate ? 0 : 1;
-          }
-        }
-
-        cvData = {
-          exists: true,
-          hasSummary: !!cv.professionalSummary,
-          experienceCount: cv.experience?.length || 0,
-          educationCount: cv.education?.length || 0,
-          skillsCount: cv.skills?.length || 0,
-          languagesCount: cv.languages?.length || 0,
-          lastGenerated: cv.lastGenerated,
-          generationsUsed: generationsUsed,
-          canGenerate: canGenerate,
-          isPremium: isPremium,
-          lastGenerationDate: cv.lastGenerationDate
-        };
-      }
-    } catch (error) {
-      console.error('Error fetching CV:', error.message);
-      // Continue without CV if it fails to load
-    }
-
     res.json({
       success: true,
       data: {
@@ -434,24 +298,6 @@ router.get('/dashboard/data', requireAuth, async (req, res, next) => {
         weatherData: weatherData,
         bitcoinData: bitcoinData,
         bcuRates: bcuRates,
-        incidents: incidents.map(inc => ({
-          id: inc._id,
-          type: inc.type,
-          severity: inc.severity,
-          description: inc.description,
-          neighborhood: inc.neighborhoodName,
-          createdAt: inc.createdAt,
-          location: inc.location
-        })),
-        surlinkPosts: surlinkPosts.map(post => ({
-          id: post._id,
-          title: post.title,
-          category: post.category,
-          price: post.price,
-          city: post.location?.city,
-          image: post.media?.[0] || null,
-          createdAt: post.createdAt
-        })),
         forumThreads: forumThreads.map(thread => ({
           id: thread._id,
           title: thread.title,
@@ -462,9 +308,7 @@ router.get('/dashboard/data', requireAuth, async (req, res, next) => {
           createdAt: thread.createdAt
         })),
         notifications,
-        unreadNotificationsCount: unreadCount,
-        creditProfile: creditProfile,
-        cvData: cvData
+        unreadNotificationsCount: unreadCount
       }
     });
 

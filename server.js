@@ -19,14 +19,10 @@ const __dirname = path.dirname(__filename);
 
 // API Routes
 import authRoutes from './src/routes/auth.js';
-import incidentRoutes from './src/routes/incidents.js';
-import heatmapRoutes from './src/routes/heatmap.js';
-import neighborhoodRoutes from './src/routes/neighborhoods.js';
 import newsRoutes from './src/routes/news.js';
 import enlacesminteriorRoutes from './src/routes/enlacesminterior.js';
 import adminRoutes from './src/routes/admin.js';
 import notificationRoutes from './src/routes/notifications.js';
-import surlinkRoutes from './src/routes/surlink.js';
 import pricingRoutes from './src/routes/pricing.js';
 import exchangeRatesRoutes from './src/routes/exchangeRates.js';
 import forumRoutes from './src/routes/forum.js';
@@ -34,6 +30,8 @@ import reportsRoutes from './src/routes/reports.js';
 import dashboardRoutes from './src/routes/dashboard.js';
 import preferencesRoutes from './src/routes/preferences.js';
 import busesRoutes from './src/routes/buses.js';
+import weatherRoutes from './src/routes/weather.js';
+import assistantRoutes from './src/routes/assistant.js';
 
 // View Routes
 import viewRoutes from './src/routes/views.js';
@@ -153,20 +151,18 @@ app.use(trackPageVisit);
 
 // API Routes
 app.use('/auth', authRoutes);
-app.use('/map/incidents', incidentRoutes);
-app.use('/heatmap', heatmapRoutes);
-app.use('/neighborhoods', neighborhoodRoutes);
 app.use('/news', newsRoutes);
 app.use('/enlacesminterior', enlacesminteriorRoutes);
 app.use('/admin', adminRoutes);
 app.use('/notifications', notificationRoutes);
-app.use('/surlink', surlinkRoutes);
 app.use('/pricing', pricingRoutes);
 app.use('/exchange-rates', exchangeRatesRoutes);
 app.use('/forum', forumRoutes);
 app.use('/reports', reportsRoutes);
 app.use('/preferences', preferencesRoutes);
 app.use('/api/buses', busesRoutes);
+app.use('/weather', weatherRoutes);
+app.use('/assistant', assistantRoutes);
 
 // Dashboard routes (includes both view and API routes)
 app.use('/', dashboardRoutes);

@@ -1,10 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import axios from 'axios';
-import Incident from '../models/Incident.js';
 import NewsEvent from '../models/NewsEvent.js';
-import { AdminPost, Notification, User, SurlinkListing, ForumThread, ForumComment, ForumSettings, PricingSettings, PageVisit, SystemSettings, ApiToken, Donor } from '../models/index.js';
-import CreditProfileRequest from '../models/CreditProfileRequest.js';
+import { AdminPost, Notification, User, ForumThread, ForumComment, ForumSettings, PricingSettings, PageVisit, SystemSettings, ApiToken, Donor } from '../models/index.js';
 import { runNewsIngestion } from '../jobs/newsIngestion.js';
 import { runScheduledCleanup, reloadCronJobs } from '../jobs/index.js';
 import logger from '../utils/logger.js';
@@ -12,12 +10,6 @@ import { Parser } from 'json2csv';
 import ExcelJS from 'exceljs';
 import { getMaintenanceStatus } from '../middleware/maintenanceCheck.js';
 import { getAuthenticatedUser } from '../config/auth0.js';
-import {
-  checkAllExternalSites,
-  checkSectionSites,
-  getSiteSummary
-} from '../services/siteStatusChecker.js';
-import { getSectionSummary } from '../data/external-sites.js';
 
 const router = express.Router();
 
@@ -82,57 +74,22 @@ router.get('/stats', requireAdmin, async (req, res) => {
 
     // Obtener estadísticas básicas
     const [
-      totalIncidents,
-      incidentsToday,
       totalNews,
-      recentIncidents,
       totalUsers,
       usersToday
     ] = await Promise.all([
-      Incident.countDocuments(),
-      Incident.countDocuments({ createdAt: { $gte: yesterday } }),
       NewsEvent.countDocuments(),
-      Incident.find()
-        .sort({ createdAt: -1 })
-        .limit(5)
-        .select('type description createdAt'),
       User.countDocuments(),
       User.countDocuments({ createdAt: { $gte: yesterday } })
     ]);
-
-    // Contar incidentes por tipo
-    const incidentsByType = await Incident.aggregate([
-      {
-        $group: {
-          _id: '$type',
-          count: { $sum: 1 }
-        }
-      },
-      {
-        $sort: { count: -1 }
-      }
-    ]);
-
-    const incidentsByTypeObj = {};
-    incidentsByType.forEach(item => {
-      incidentsByTypeObj[item._id || 'Sin categoría'] = item.count;
-    });
 
     // Estado de las conexiones
     const mongoConnected = mongoose.connection.readyState === 1;
 
     const stats = {
-      totalIncidents,
-      incidentsToday,
       totalUsers,
       usersToday,
       totalNews,
-      incidentsByType: incidentsByTypeObj,
-      recentIncidents: recentIncidents.map(incident => ({
-        type: incident.type,
-        description: incident.description,
-        timestamp: incident.createdAt
-      })),
       mongoConnected,
       serverUptime: process.uptime(),
       timestamp: new Date()
@@ -771,76 +728,6 @@ router.get('/news/stats', requireAdmin, async (req, res) => {
       error: 'Error getting news statistics',
       details: error.message
     });
-  }
-});
-
-/**
- * POST /admin/surlink/purge
- * Delete Surlink listings by category or all listings
- */
-router.post('/surlink/purge', requireAdmin, async (req, res) => {
-  try {
-    const allowedCategories = ['casas', 'autos', 'academy', 'financial', 'all'];
-    const rawCategory = (req.body?.category || 'all').toString().toLowerCase();
-
-    if (!allowedCategories.includes(rawCategory)) {
-      return res.status(400).json({ error: 'Categoría inválida. Usa casas, autos, academy, financial o all.' });
-    }
-
-    const filter = rawCategory === 'all' ? {} : { category: rawCategory };
-    const result = await SurlinkListing.deleteMany(filter);
-
-    logger.warn('Surlink purge executed', {
-      deleted: result.deletedCount || 0,
-      category: rawCategory,
-      requestedBy: req.user?.uid
-    });
-
-    res.json({
-      message: 'Colección de Surlink depurada correctamente',
-      deleted: result.deletedCount || 0,
-      category: rawCategory
-    });
-  } catch (error) {
-    logger.error('Error purging Surlink listings', { error: error.message });
-    res.status(500).json({ error: 'No se pudo limpiar la colección de Surlink' });
-  }
-});
-
-/**
- * POST /admin/surlink/cleanup
- * Archive expired or stale Surlink listings
- */
-router.post('/surlink/cleanup', requireAdmin, async (req, res) => {
-  try {
-    const now = new Date();
-    const staleDate = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000); // 180 días
-
-    const result = await SurlinkListing.updateMany(
-      {
-        status: 'active',
-        $or: [
-          { expiresAt: { $lt: now } },
-          { createdAt: { $lt: staleDate }, expiresAt: { $exists: false } }
-        ]
-      },
-      { status: 'inactive' }
-    );
-
-    logger.info('Surlink cleanup executed', {
-      archived: result.modifiedCount || 0,
-      performedAt: now,
-      requestedBy: req.user?.uid
-    });
-
-    res.json({
-      message: 'Limpieza de listados ejecutada correctamente.',
-      archived: result.modifiedCount || 0,
-      timestamp: now
-    });
-  } catch (error) {
-    logger.error('Error cleaning up Surlink listings', { error });
-    res.status(500).json({ error: 'No se pudo depurar los listados' });
   }
 });
 
@@ -1562,16 +1449,10 @@ router.post('/cron/:job/run', requireAdmin, async (req, res) => {
       case 'cleanup':
         result = await runScheduledCleanup();
         break;
-      case 'heatmapUpdate':
-        // Import here to avoid circular dependency
-        const { updatePercentiles } = await import('../services/heatmapService.js');
-        await updatePercentiles();
-        result = { success: true };
-        break;
       default:
         return res.status(400).json({
           error: 'Trabajo cron no válido',
-          validJobs: ['newsIngestion', 'cleanup', 'heatmapUpdate']
+          validJobs: ['newsIngestion', 'cleanup']
         });
     }
 
@@ -1966,96 +1847,8 @@ router.delete('/donors/:id', requireAdmin, async (req, res) => {
 });
 
 /**
- * PUT /admin/incidents/:id
- * Update an incident (admin only)
- */
-router.put('/incidents/:id', requireAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { type, severity, description, status, hidden, hiddenReason, sourceNews, latitude, longitude } = req.body;
-
-    // Validate incident ID
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        error: 'ID de incidente requerido'
-      });
-    }
-
-    // Find incident
-    const incident = await Incident.findById(id);
-    if (!incident) {
-      return res.status(404).json({
-        success: false,
-        error: 'Incidente no encontrado'
-      });
-    }
-
-    // Update fields if provided
-    if (type !== undefined) incident.type = type;
-    if (severity !== undefined) incident.severity = parseInt(severity);
-    if (description !== undefined) incident.description = description;
-    if (status !== undefined) incident.status = status;
-    if (hidden !== undefined) incident.hidden = hidden;
-    if (hiddenReason !== undefined) incident.hiddenReason = hiddenReason;
-
-    // Update location if provided
-    if (latitude !== undefined && longitude !== undefined) {
-      const lat = parseFloat(latitude);
-      const lon = parseFloat(longitude);
-
-      // Validate coordinates
-      if (!isNaN(lat) && !isNaN(lon) && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
-        incident.location = {
-          type: 'Point',
-          coordinates: [lon, lat]
-        };
-      }
-    }
-
-    // Update sourceNews if provided
-    if (sourceNews !== undefined && Array.isArray(sourceNews)) {
-      incident.sourceNews = sourceNews.map(news => ({
-        newsId: news.newsId,
-        title: news.title,
-        url: news.url,
-        source: news.source,
-        addedAt: news.addedAt || new Date()
-      }));
-
-      // Set autoGenerated to true if there are sources
-      if (sourceNews.length > 0) {
-        incident.autoGenerated = true;
-      }
-    }
-
-    // Set moderator info
-    incident.moderatedBy = req.user.uid || req.user.email;
-
-    await incident.save();
-
-    logger.info(`Incident updated: ${id} by ${req.user.email}`, {
-      changes: { type, severity, description, status, hidden, sourceNewsCount: sourceNews?.length }
-    });
-
-    res.json({
-      success: true,
-      message: 'Incidente actualizado exitosamente',
-      incident: incident.toGeoJSON()
-    });
-  } catch (error) {
-    logger.error('Error updating incident:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Error al actualizar incidente',
-      details: error.message
-    });
-  }
-});
-
-/**
  * GET /admin/news/search
- * Search news by query (for incident source selection)
+ * Search news by query
  */
 router.get('/news/search', requireAdmin, async (req, res) => {
   try {
@@ -2098,386 +1891,6 @@ router.get('/news/search', requireAdmin, async (req, res) => {
       success: false,
       error: 'Error al buscar noticias',
       details: error.message
-    });
-  }
-});
-
-// ============================
-// CREDIT PROFILE ADMIN ENDPOINTS
-// ============================
-
-/**
- * GET /admin/credit-profile/requests
- * Get all credit profile requests
- */
-router.get('/credit-profile/requests', requireAdmin, async (req, res) => {
-  try {
-    const { status, page = 1, limit = 50 } = req.query;
-
-    const query = {};
-    if (status && status !== 'all') {
-      query.status = status;
-    }
-
-    const requests = await CreditProfileRequest.find(query)
-      .sort({ requestedAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit))
-      .lean();
-
-    const total = await CreditProfileRequest.countDocuments(query);
-
-    // Get user details for each request
-    const requestsWithUsers = await Promise.all(
-      requests.map(async (req) => {
-        const user = await User.findOne({ uid: req.uid }).select('email name').lean();
-        return {
-          ...req,
-          userEmail: user?.email || 'Desconocido',
-          userName: user?.name || 'Desconocido'
-        };
-      })
-    );
-
-    res.json({
-      success: true,
-      requests: requestsWithUsers,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total,
-        pages: Math.ceil(total / limit)
-      }
-    });
-  } catch (error) {
-    logger.error('Error fetching credit profile requests', { error });
-    res.status(500).json({
-      success: false,
-      error: 'Error al obtener solicitudes'
-    });
-  }
-});
-
-/**
- * GET /admin/credit-profile/requests/:id
- * Get specific credit profile request details
- */
-router.get('/credit-profile/requests/:id', requireAdmin, async (req, res) => {
-  try {
-    const request = await CreditProfileRequest.findById(req.params.id).lean();
-
-    if (!request) {
-      return res.status(404).json({
-        success: false,
-        error: 'Solicitud no encontrada'
-      });
-    }
-
-    // Get user details
-    const user = await User.findOne({ uid: request.uid }).select('email name').lean();
-
-    // Detectar si la cédula cambió respecto a la anterior
-    const cedulaChanged = request.previousCedula && request.previousCedula !== request.cedula;
-
-    res.json({
-      success: true,
-      request: {
-        ...request,
-        userEmail: user?.email || 'Desconocido',
-        userName: user?.name || 'Desconocido',
-        cedulaChanged: cedulaChanged
-      }
-    });
-  } catch (error) {
-    logger.error('Error fetching credit profile request', { error });
-    res.status(500).json({
-      success: false,
-      error: 'Error al obtener solicitud'
-    });
-  }
-});
-
-/**
- * PUT /admin/credit-profile/requests/:id/status
- * Update request status
- */
-router.put('/credit-profile/requests/:id/status', requireAdmin, async (req, res) => {
-  try {
-    const { status, adminNotes } = req.body;
-
-    if (!['pendiente', 'procesando', 'generada', 'error', 'eliminada'].includes(status)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Estado inválido'
-      });
-    }
-
-    const request = await CreditProfileRequest.findById(req.params.id);
-
-    if (!request) {
-      return res.status(404).json({
-        success: false,
-        error: 'Solicitud no encontrada'
-      });
-    }
-
-    request.status = status;
-    if (adminNotes) {
-      request.adminNotes = adminNotes;
-    }
-
-    if (status === 'procesando' && !request.processedAt) {
-      request.processedAt = new Date();
-    }
-
-    await request.save();
-
-    logger.info('Credit profile request status updated', {
-      requestId: request._id,
-      status,
-      adminEmail: req.user.email
-    });
-
-    res.json({
-      success: true,
-      message: 'Estado actualizado exitosamente',
-      request
-    });
-  } catch (error) {
-    logger.error('Error updating request status', { error });
-    res.status(500).json({
-      success: false,
-      error: 'Error al actualizar estado'
-    });
-  }
-});
-
-/**
- * PUT /admin/credit-profile/requests/:id/data
- * Upload credit profile data (JSON from BCU)
- */
-router.put('/credit-profile/requests/:id/data', requireAdmin, async (req, res) => {
-  try {
-    const { profileData } = req.body;
-
-    if (!profileData) {
-      return res.status(400).json({
-        success: false,
-        error: 'Datos del perfil son requeridos'
-      });
-    }
-
-    // Validar estructura mínima del JSON
-    if (!profileData.nombre || !profileData.documento) {
-      return res.status(400).json({
-        success: false,
-        error: 'JSON inválido: falta nombre o documento'
-      });
-    }
-
-    const request = await CreditProfileRequest.findById(req.params.id);
-
-    if (!request) {
-      return res.status(404).json({
-        success: false,
-        error: 'Solicitud no encontrada'
-      });
-    }
-
-    // Actualizar datos
-    request.profileData = profileData;
-    request.status = 'generada';
-    request.generatedAt = new Date();
-    request.processedAt = new Date();
-
-    // Calcular puntaje crediticio
-    request.calculateCreditScore();
-
-    await request.save();
-
-    logger.info('Credit profile data uploaded', {
-      requestId: request._id,
-      adminEmail: req.user.email,
-      creditScore: request.creditScore,
-      bcuRating: request.bcuRating
-    });
-
-    res.json({
-      success: true,
-      message: 'Datos cargados exitosamente',
-      request: {
-        id: request._id,
-        status: request.status,
-        creditScore: request.creditScore,
-        bcuRating: request.bcuRating,
-        totalDebt: request.totalDebt
-      }
-    });
-  } catch (error) {
-    logger.error('Error uploading credit profile data', { error });
-    res.status(500).json({
-      success: false,
-      error: 'Error al cargar datos',
-      details: error.message
-    });
-  }
-});
-
-/**
- * DELETE /admin/credit-profile/requests/:id
- * Delete credit profile request
- */
-router.delete('/credit-profile/requests/:id', requireAdmin, async (req, res) => {
-  try {
-    const request = await CreditProfileRequest.findById(req.params.id);
-
-    if (!request) {
-      return res.status(404).json({
-        success: false,
-        error: 'Solicitud no encontrada'
-      });
-    }
-
-    await request.deleteOne();
-
-    logger.info('Credit profile request deleted by admin', {
-      requestId: req.params.id,
-      adminEmail: req.user.email
-    });
-
-    res.json({
-      success: true,
-      message: 'Solicitud eliminada exitosamente'
-    });
-  } catch (error) {
-    logger.error('Error deleting credit profile request', { error });
-    res.status(500).json({
-      success: false,
-      error: 'Error al eliminar solicitud'
-    });
-  }
-});
-
-/**
- * GET /admin/credit-profile/stats
- * Get statistics about credit profile requests
- */
-router.get('/credit-profile/stats', requireAdmin, async (req, res) => {
-  try {
-    const [
-      totalRequests,
-      pendingRequests,
-      processingRequests,
-      generatedRequests,
-      errorRequests,
-      requestsToday
-    ] = await Promise.all([
-      CreditProfileRequest.countDocuments(),
-      CreditProfileRequest.countDocuments({ status: 'pendiente' }),
-      CreditProfileRequest.countDocuments({ status: 'procesando' }),
-      CreditProfileRequest.countDocuments({ status: 'generada' }),
-      CreditProfileRequest.countDocuments({ status: 'error' }),
-      CreditProfileRequest.countDocuments({
-        requestedAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
-      })
-    ]);
-
-    res.json({
-      success: true,
-      stats: {
-        total: totalRequests,
-        pending: pendingRequests,
-        processing: processingRequests,
-        generated: generatedRequests,
-        error: errorRequests,
-        today: requestsToday
-      }
-    });
-  } catch (error) {
-    logger.error('Error fetching credit profile stats', { error });
-    res.status(500).json({
-      success: false,
-      error: 'Error al obtener estadísticas'
-    });
-  }
-});
-
-/**
- * GET /admin/external-sites-monitor/summary
- * Get summary of all external sites (no actual checks, just counts)
- */
-router.get('/external-sites-monitor/summary', requireAdmin, (req, res) => {
-  try {
-    const summary = getSiteSummary();
-    const sections = getSectionSummary();
-
-    res.json({
-      success: true,
-      summary,
-      sections
-    });
-  } catch (error) {
-    logger.error('Error getting external sites summary:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Error al obtener resumen de sitios'
-    });
-  }
-});
-
-/**
- * POST /admin/external-sites-monitor/check-all
- * Check status of all external sites
- */
-router.post('/external-sites-monitor/check-all', requireAdmin, async (req, res) => {
-  try {
-    logger.info('Checking all external sites', {
-      triggeredBy: req.user.email,
-      timestamp: new Date()
-    });
-
-    const concurrency = req.body.concurrency || 15;
-    const results = await checkAllExternalSites(concurrency);
-
-    res.json({
-      success: true,
-      ...results
-    });
-  } catch (error) {
-    logger.error('Error checking all external sites:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Error al verificar sitios externos'
-    });
-  }
-});
-
-/**
- * POST /admin/external-sites-monitor/check-section/:sectionKey
- * Check status of sites in a specific section
- */
-router.post('/external-sites-monitor/check-section/:sectionKey', requireAdmin, async (req, res) => {
-  try {
-    const { sectionKey } = req.params;
-    const concurrency = req.body.concurrency || 10;
-
-    logger.info('Checking external sites for section', {
-      section: sectionKey,
-      triggeredBy: req.user.email,
-      timestamp: new Date()
-    });
-
-    const results = await checkSectionSites(sectionKey, concurrency);
-
-    res.json({
-      success: true,
-      ...results
-    });
-  } catch (error) {
-    logger.error('Error checking section sites:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message || 'Error al verificar sitios de la sección'
     });
   }
 });

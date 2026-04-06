@@ -62,16 +62,6 @@ router.get('/social', (req, res) => {
 });
 
 /**
- * Centinel page (map + security features)
- */
-router.get('/centinel', checkMaintenance('centinel'), (req, res) => {
-  res.render('centinel', {
-    title: 'AUSTRA Centinel - Mapa en Tiempo Real',
-    page: 'centinel'
-  });
-});
-
-/**
  * News page - now handled by news.js router
  */
 
@@ -112,18 +102,6 @@ router.get('/enlacesminterior', (req, res) => {
   res.render('enlacesminterior', {
     title: 'Enlaces Oficiales - Ministerio del Interior - Austra',
     page: 'enlacesminterior'
-  });
-});
-
-/**
- * Surlink hub
- */
-router.get('/surlink', checkMaintenance('surlink'), (req, res) => {
-  res.render('surlink', {
-    title: 'AUSTRA Surlink - Ecosistema inmobiliario, académico y automotriz',
-    page: 'surlink',
-    isAuthenticated: !!req.session?.user,
-    user: req.session?.user || null
   });
 });
 

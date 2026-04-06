@@ -1,5 +1,4 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import GeoCache from '../models/GeoCache.js';
 import logger from '../utils/logger.js';
 
 /**
@@ -41,19 +40,6 @@ export async function analyzeNewsForIncident(title, content, url) {
       keySuffix: apiKey.substring(apiKey.length - 4),
       keyLength: apiKey.length
     });
-
-    const cacheKey = `gemini:incident:${url}`;
-
-    // Check cache first (24 hour TTL)
-    const cached = await GeoCache.findOne({
-      cacheKey,
-      expiresAt: { $gt: new Date() }
-    });
-
-    if (cached) {
-      logger.info('Gemini analysis cache hit', { url });
-      return cached.data;
-    }
 
     // Prepare prompt for Gemini
     const prompt = `Analiza la siguiente noticia y extrae información estructurada SOLO si se cumplen TODAS estas condiciones:
@@ -122,14 +108,6 @@ Responde SOLO con el JSON, sin texto adicional.`;
     if (!analysisData.hasIncident) {
       logger.info('No incident detected by Gemini', { url });
 
-      // Cache negative result (1 day)
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-      await GeoCache.findOneAndUpdate(
-        { cacheKey },
-        { cacheKey, data: null, expiresAt },
-        { upsert: true }
-      );
-
       return null;
     }
 
@@ -171,14 +149,6 @@ Responde SOLO con el JSON, sin texto adicional.`;
       severity: analysisData.severity,
       description: analysisData.description || title.substring(0, 200)
     };
-
-    // Cache successful result (24 hours)
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    await GeoCache.findOneAndUpdate(
-      { cacheKey },
-      { cacheKey, data: result_data, expiresAt },
-      { upsert: true }
-    );
 
     logger.info('Gemini analysis successful', { url, result: result_data });
     return result_data;
