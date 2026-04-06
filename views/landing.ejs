@@ -1,16 +1,16 @@
 <!--
     Created by: Bruno Silveira with 💙
-    Austra - Plataforma de Seguridad Ciudadana y Marketplace Integral
+    Austra - Super App para Uruguay
     a DOKTA company
-  ______   __    __   ______  ________  _______    ______  
- /      \ |  \  |  \ /      \|        \|       \  /      \ 
+  ______   __    __   ______  ________  _______    ______
+ /      \ |  \  |  \ /      \|        \|       \  /      \
 |  $$$$$$\| $$  | $$|  $$$$$$\\$$$$$$$$| $$$$$$$\|  $$$$$$\
 | $$__| $$| $$  | $$| $$___\$$  | $$   | $$__| $$| $$__| $$
 | $$    $$| $$  | $$ \$$    \   | $$   | $$    $$| $$    $$
 | $$$$$$$$| $$  | $$ _\$$$$$$\  | $$   | $$$$$$$\| $$$$$$$$
 | $$  | $$| $$__/ $$|  \__| $$  | $$   | $$  | $$| $$  | $$
 | $$  | $$ \$$    $$ \$$    $$  | $$   | $$  | $$| $$  | $$
- \$$   \$$  \$$$$$$   \$$$$$$    \$$    \$$   \$$ \$$   \$$.cc                                      
+ \$$   \$$  \$$$$$$   \$$$$$$    \$$    \$$   \$$ \$$   \$$.cc
 
     https://austra.cc
 
@@ -23,18 +23,16 @@
     <title><%= title %></title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Austra: Tu ecosistema integral de información y servicios en Uruguay. Seguridad ciudadana en tiempo real con Centinel, marketplace de inmuebles, autos, educación y finanzas con Surlink. Todo conectado en una plataforma.">
-    <meta name="keywords" content="seguridad ciudadana uruguay, mapa delitos uruguay, marketplace uruguay, inmuebles uruguay, autos uruguay, centinel, surlink, austra, seguridad tiempo real, incidentes uruguay, plataforma integral">
+    <meta name="description" content="Austra: Tu super app para Uruguay. Cotizaciones en vivo, clima, noticias, transporte STM, asistente IA y foro comunitario. Todo en una plataforma.">
+    <meta name="keywords" content="uruguay super app, cotizaciones dolar uruguay, clima montevideo, noticias uruguay, STM buses, asistente IA, austra, foro uruguay">
     <meta name="author" content="DOKTA - Austra">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="language" content="Spanish">
-    <meta name="revisit-after" content="7 days">
-    <meta name="rating" content="general">
     <link rel="canonical" href="https://austra.cc/">
 
     <!-- Theme Color -->
-    <meta name="theme-color" content="#7c5cff">
-    <meta name="msapplication-TileColor" content="#7c5cff">
+    <meta name="theme-color" content="#ff6b6b">
+    <meta name="msapplication-TileColor" content="#0a0a0f">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -42,28 +40,27 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://austra.cc/">
-    <meta property="og:title" content="Austra - Plataforma Integral de Seguridad, Inmuebles, Autos y Servicios">
-    <meta property="og:description" content="Seguí la seguridad de tu ciudad en tiempo real, encontrá inmuebles, autos, cursos y servicios financieros. Todo conectado en Austra.">
+    <meta property="og:title" content="Austra - Tu super app para Uruguay">
+    <meta property="og:description" content="Cotizaciones en vivo, clima, noticias, transporte STM, asistente IA y comunidad. Todo lo que necesitás de Uruguay en un solo lugar.">
     <meta property="og:site_name" content="Austra">
     <meta property="og:locale" content="es_UY">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://austra.cc/">
-    <meta name="twitter:title" content="Austra - Plataforma Integral de Seguridad, Inmuebles, Autos y Servicios">
-    <meta name="twitter:description" content="Seguí la seguridad de tu ciudad en tiempo real, encontrá inmuebles, autos, cursos y servicios financieros. Todo conectado en Austra.">
+    <meta name="twitter:title" content="Austra - Tu super app para Uruguay">
+    <meta name="twitter:description" content="Cotizaciones en vivo, clima, noticias, transporte STM, asistente IA y comunidad. Todo lo que necesitás de Uruguay en un solo lugar.">
 
     <!-- Geo Tags -->
     <meta name="geo.region" content="UY">
     <meta name="geo.placename" content="Uruguay">
 
     <%- include('partials/theme-init') %>
-    <script src="/js/preferences-service.js"></script>
-    <script src="/js/theme-toggle.js" defer></script>
 
     <!-- Preconnect for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Styles -->
     <link rel="stylesheet" href="/css/landing.css">
@@ -78,225 +75,258 @@
                 "name": "Austra",
                 "legalName": "DOKTA - Austra",
                 "url": "https://austra.cc",
-                "logo": "https://austra.cc/logo.png",
                 "foundingDate": "2024",
-                "description": "Plataforma integral de seguridad ciudadana, marketplace de inmuebles, autos, educación y servicios financieros en Uruguay",
+                "description": "Super app para Uruguay: finanzas, clima, noticias, transporte, asistente IA y comunidad",
                 "address": {
                     "@type": "PostalAddress",
                     "addressCountry": "UY",
                     "addressRegion": "Uruguay"
-                },
-                "parentOrganization": {
-                    "@type": "Organization",
-                    "name": "DOKTA",
-                    "url": "https://dokta.cc"
-                },
-                "sameAs": []
+                }
             },
             {
                 "@type": "WebSite",
                 "name": "Austra",
                 "url": "https://austra.cc",
-                "description": "Tu ecosistema integral de información y servicios: seguridad ciudadana, inmuebles, autos, educación y finanzas",
-                "inLanguage": "es-UY",
-                "potentialAction": {
-                    "@type": "SearchAction",
-                    "target": "https://austra.cc/search?q={search_term_string}",
-                    "query-input": "required name=search_term_string"
-                }
-            },
-            {
-                "@type": "WebPage",
-                "@id": "https://austra.cc/#webpage",
-                "url": "https://austra.cc",
-                "name": "Austra - Plataforma Integral de Seguridad, Inmuebles, Autos y Servicios",
-                "description": "Seguí la seguridad de tu ciudad en tiempo real con Centinel, encontrá inmuebles, autos, cursos y servicios financieros con Surlink. Todo conectado en Austra.",
-                "inLanguage": "es-UY",
-                "isPartOf": {
-                    "@id": "https://austra.cc/#website"
-                }
-            },
-            {
-                "@type": "SoftwareApplication",
-                "name": "Centinel",
-                "applicationCategory": "SecurityApplication",
-                "operatingSystem": "Web",
-                "description": "Mapa en tiempo real de incidentes de seguridad y noticias geolocalizadas para mantenerte informado sobre tu ciudad",
-                "offers": {
-                    "@type": "Offer",
-                    "price": "0",
-                    "priceCurrency": "USD"
-                }
-            },
-            {
-                "@type": "Product",
-                "name": "Surlink Marketplace",
-                "description": "Marketplace integral de inmuebles, autos, cursos educativos y servicios financieros",
-                "brand": {
-                    "@type": "Brand",
-                    "name": "Austra"
-                },
-                "offers": {
-                    "@type": "AggregateOffer",
-                    "priceCurrency": "UYU",
-                    "lowPrice": "0",
-                    "offerCount": "1000+"
-                }
+                "description": "Tu super app para Uruguay",
+                "inLanguage": "es-UY"
             }
         ]
     }
     </script>
 </head>
 <body>
-    <div class="page">
-        <div class="glow one"></div>
-        <div class="glow two"></div>
+    <%- include('partials/theme-init') %>
 
-        <header>
-            <div class="brand" itemscope itemtype="https://schema.org/Brand">
-                <span itemprop="name">AUSTRA</span>
-            </div>
-            <div class="hero-nav">
+    <!-- Hero Section -->
+    <section class="hero">
+        <nav class="hero-nav">
+            <div class="hero-nav-brand">AUSTRA</div>
+            <div class="hero-nav-links">
                 <% if (isAuthenticated) { %>
-                    <!-- Menu hamburguesa para usuarios autenticados -->
-                    <div class="hamburger-menu">
-                        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menú de usuario" aria-expanded="false">
-                            <span class="hamburger-icon">☰</span>
-                        </button>
-                        <nav class="dropdown-menu" id="dropdownMenu" aria-label="Navegación de usuario">
-                            <a href="/dashboard" title="Ir al Dashboard" aria-label="Ir al Dashboard">
-                                <span>Dashboard</span>
-                            </a>
-                            <a href="/auth/logout" title="Cerrar sesión" aria-label="Cerrar sesión">
-                                <span>Cerrar sesión</span>
-                            </a>
-                        </nav>
-                    </div>
+                    <a href="/dashboard" class="nav-link">Dashboard</a>
+                    <a href="/auth/logout" class="nav-link nav-link--logout">Salir</a>
                 <% } else { %>
-                    <!-- Botón de inicio de sesión para usuarios no autenticados -->
-                    <nav class="nav-links" aria-label="Navegación principal">
-                        <a href="/login" title="Acceder a tu cuenta Austra" aria-label="Iniciar sesión en Austra">Iniciar sesión</a>
-                    </nav>
+                    <a href="/login" class="nav-link">Iniciar sesion</a>
+                    <a href="/login" class="nav-link nav-link--cta">Registrate</a>
                 <% } %>
             </div>
-        </header>
-        <div class="hero-eyebrow">
-            <a href="/centinel" class="eyebrow-link" data-category="seguridad">Seguridad</a>
-            <span class="eyebrow-separator">•</span>
-            <a href="/surlink" class="eyebrow-link" data-category="inmuebles">Inmuebles</a>
-            <span class="eyebrow-separator">•</span>
-            <a href="/surlink" class="eyebrow-link" data-category="autos">Autos</a>
-            <span class="eyebrow-separator">•</span>
-            <a href="/social" class="eyebrow-link" data-category="social">Social</a>
-            <span class="eyebrow-separator">•</span>
-            <a href="/surlink" class="eyebrow-link" data-category="educacion">Educación</a>
-            <span class="eyebrow-separator">•</span>
-            <a href="/surlink" class="eyebrow-link" data-category="finanzas">Finanzas</a>
+        </nav>
+
+        <div class="hero-content">
+            <div class="hero-badge">Super App para Uruguay</div>
+            <h1 class="hero-title">
+                <span class="hero-title-line">AUSTRA</span>
+            </h1>
+            <p class="hero-subtitle">Todo lo que necesitas de Uruguay, en un solo lugar. Cotizaciones en vivo, clima, noticias, transporte y mas.</p>
+            <div class="hero-actions">
+                <% if (isAuthenticated) { %>
+                    <a href="/dashboard" class="btn btn-primary">Ir al Dashboard</a>
+                <% } else { %>
+                    <a href="/login" class="btn btn-primary">Registrate gratis</a>
+                    <a href="/login" class="btn btn-secondary">Iniciar sesion</a>
+                <% } %>
+            </div>
         </div>
-        <div class="austra-divider"></div>
-        <h2 class="austra-glass">
-            <span style="--i:0">A</span><span style="--i:1">U</span><span style="--i:2">S</span><span style="--i:3">T</span><span style="--i:4">R</span><span style="--i:5">A</span>
-        </h2>
-        <div class="austra-divider"></div>
-        <main>
-            <section class="hero" itemscope itemtype="https://schema.org/Service">
-                <h1 class="hero-title" itemprop="name">Tu ecosistema integral de<br><span class="rotating-word" id="rotatingWord">información</span></h1>
-                <p class="hero-text" itemprop="description">
-                    Todo lo que necesitás, en un mismo lugar: seguí la seguridad de tu ciudad, encontrá casas, autos, educación, finanzas y más.
-                </p>
-                <p class="hero-text">Todo conectado con Austra.</p>
-                <div class="hero-actions">
-                    <a class="cta primary" href="/plataforma" title="Descubre todas las funcionalidades de Austra" aria-label="Conocer más sobre la plataforma Austra">Conocé más</a>
-                    <% if (isAuthenticated) { %>
-                        <a class="cta secondary" href="/dashboard" title="Ir a tu panel de control" aria-label="Acceder al dashboard de Austra">Ir al Dashboard</a>
-                    <% } else { %>
-                        <a class="cta secondary" href="/login" title="Accede a todas las herramientas de Austra" aria-label="Explorar la plataforma Austra">Explora AUSTRA</a>
-                    <% } %>
+
+        <div class="hero-glow"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Modulos</span>
+                <h2 class="section-title">Todo Uruguay en tu bolsillo</h2>
+                <p class="section-desc">Seis modulos integrados que cubren tu dia a dia.</p>
+            </div>
+
+            <div class="features-grid">
+                <a href="/dashboard" class="feature-card" data-aos>
+                    <div class="feature-icon">💱</div>
+                    <h3 class="feature-title">Finanzas</h3>
+                    <p class="feature-desc">Cotizaciones USD/UYU en vivo, Bitcoin, tracking de gastos personales y alertas de cambio.</p>
+                    <span class="feature-arrow">&rarr;</span>
+                </a>
+
+                <a href="/dashboard" class="feature-card" data-aos>
+                    <div class="feature-icon">🌤️</div>
+                    <h3 class="feature-title">Clima</h3>
+                    <p class="feature-desc">Pronostico a 3 dias, condiciones actuales en Montevideo y alertas meteorologicas.</p>
+                    <span class="feature-arrow">&rarr;</span>
+                </a>
+
+                <a href="/dashboard" class="feature-card" data-aos>
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">Asistente IA</h3>
+                    <p class="feature-desc">Chatbot inteligente con contexto en vivo sobre Uruguay. Preguntale lo que quieras.</p>
+                    <span class="feature-arrow">&rarr;</span>
+                </a>
+
+                <a href="/dashboard" class="feature-card" data-aos>
+                    <div class="feature-icon">📰</div>
+                    <h3 class="feature-title">Noticias</h3>
+                    <p class="feature-desc">Noticias locales de Uruguay en tiempo real. Siempre al tanto de lo que pasa.</p>
+                    <span class="feature-arrow">&rarr;</span>
+                </a>
+
+                <a href="/dashboard" class="feature-card" data-aos>
+                    <div class="feature-icon">🚌</div>
+                    <h3 class="feature-title">Transporte</h3>
+                    <p class="feature-desc">Buses STM en tiempo real. Horarios, recorridos y paradas cerca tuyo.</p>
+                    <span class="feature-arrow">&rarr;</span>
+                </a>
+
+                <a href="/forum" class="feature-card" data-aos>
+                    <div class="feature-icon">💬</div>
+                    <h3 class="feature-title">Foro</h3>
+                    <p class="feature-desc">Comunidad activa. Discusion, debate y colaboracion entre uruguayos.</p>
+                    <span class="feature-arrow">&rarr;</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">En vivo</span>
+                <h2 class="section-title">Datos en vivo de Uruguay</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card" data-aos>
+                    <div class="stat-value" id="stat-usd">--</div>
+                    <div class="stat-label">USD/UYU Compra</div>
+                    <div class="stat-pulse"></div>
                 </div>
-            </section>
+                <div class="stat-card" data-aos>
+                    <div class="stat-value" id="stat-usd-sell">--</div>
+                    <div class="stat-label">USD/UYU Venta</div>
+                    <div class="stat-pulse"></div>
+                </div>
+                <div class="stat-card" data-aos>
+                    <div class="stat-value" id="stat-temp">--</div>
+                    <div class="stat-label">Temperatura MVD</div>
+                    <div class="stat-pulse"></div>
+                </div>
+                <div class="stat-card" data-aos>
+                    <div class="stat-value" id="stat-btc">--</div>
+                    <div class="stat-label">Bitcoin USD</div>
+                    <div class="stat-pulse"></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            <aside class="cards">
-                <a class="card" href="/centinel" title="Centinel - Seguridad ciudadana en tiempo real" aria-label="Acceder a Centinel: Mapa de incidentes de seguridad en tiempo real" itemscope itemtype="https://schema.org/SoftwareApplication">
-                    <h2 class="card-title" itemprop="name">Centinel</h2>
-                    <p class="card-text" itemprop="description">Mapa en tiempo real de incidentes de seguridad y noticias geolocalizadas para mantenerte informado.</p>
-                </a>
-                <a class="card" href="/surlink" title="Surlink - Marketplace integral de Uruguay" aria-label="Acceder a Surlink: Marketplace de inmuebles, autos, cursos, finanzas y perfil crediticio BCU" itemscope itemtype="https://schema.org/Product">
-                    <h2 class="card-title" itemprop="name">Surlink</h2>
-                    <p class="card-text" itemprop="description">Marketplace integral: inmuebles, autos, cursos, servicios financieros y consulta de tu perfil crediticio del BCU en un solo lugar.</p>
-                </a>
-                <a class="card" href="/social" title="Iniciativas sociales y crowdfunding comunitario" aria-label="Acceder a la sección social de Austra">
-                    <h2 class="card-title">Social</h2>
-                    <p class="card-text">Conectá adopciones responsables y campañas solidarias con la comunidad de Austra.</p>
-                </a>
-                <a class="card" href="/forum" title="Foro de la comunidad Austra" aria-label="Acceder al Foro de Austra: Comunidad y discusiones" itemscope itemtype="https://schema.org/DiscussionForumPosting">
-                    <h2 class="card-title">Foro</h2>
-                    <p class="card-text">Comunidad activa para discutir sobre seguridad, inmuebles, autos y todos los servicios de Austra.</p>
-                </a>
-                <a class="card" href="/nexus" title="Nexus - El nexo del conocimiento" aria-label="Acceder a Nexus: Herramientas y conocimiento libre del país">
-                    <h2 class="card-title">Nexus</h2>
-                    <p class="card-text">Accede a datos abiertos, herramientas oficiales y plataformas de información pública en un solo lugar.</p>
-                </a>
-                <a class="card" href="/pricing" title="Planes y precios de Austra" aria-label="Ver planes de Austra: Desde gratis hasta premium" itemscope itemtype="https://schema.org/Offer">
-                    <h2 class="card-title">Gratis para siempre</h2>
-                    <p class="card-text">Desde gratis hasta premium. Elegí el plan que se adapte a tus necesidades y objetivos.</p>
-                </a>
-            </aside>
-        </main>
+    <!-- Coming Soon Section -->
+    <section class="coming-soon">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Proximamente</span>
+                <h2 class="section-title">Lo que viene</h2>
+                <p class="section-desc">Estamos construyendo mas herramientas para vos.</p>
+            </div>
+            <div class="coming-grid">
+                <div class="coming-card" data-aos>
+                    <div class="coming-icon">🏛️</div>
+                    <h3 class="coming-title">Servicios Publicos</h3>
+                    <p class="coming-desc">BPS, SUCIVE, DGI y mas. Consultas directas desde Austra.</p>
+                </div>
+                <div class="coming-card" data-aos>
+                    <div class="coming-icon">🛒</div>
+                    <h3 class="coming-title">Marketplace</h3>
+                    <p class="coming-desc">Compra y venta entre usuarios. Inmuebles, autos y mas.</p>
+                </div>
+                <div class="coming-card" data-aos>
+                    <div class="coming-icon">💳</div>
+                    <h3 class="coming-title">Pagos</h3>
+                    <p class="coming-desc">Pagos integrados, splits y transferencias entre usuarios.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <footer itemscope itemtype="https://schema.org/WPFooter">
-            <span>© <%= new Date().getFullYear() %> Austra, una empresa de <a href="https://dokta.cc/" target="_blank" rel="noopener noreferrer" title="Visitar sitio web de DOKTA">DOKTA</a>. Diseñado en Uruguay con 💙.</span>
-            <nav aria-label="Enlaces legales">
-                <a href="/privacy" title="Política de privacidad de Austra" aria-label="Leer política de privacidad">Privacidad</a> ·
-                <a href="/terms" title="Términos y condiciones de uso" aria-label="Leer términos y condiciones">Términos</a> ·
-                <a href="mailto:info.austra@protonmail.com?subject=Contacto desde Austra&body=Hola, me gustaría ponerme en contacto con ustedes para..." title="Contactar con Austra" aria-label="Enviar correo de contacto">Contacto</a>
-            </nav>
-        </footer>
-    </div>
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="section-container">
+            <div class="cta-content" data-aos>
+                <h2 class="cta-title">Unite a Austra</h2>
+                <p class="cta-desc">Gratis para siempre. Registrate en segundos y empeza a usar todos los modulos.</p>
+                <% if (isAuthenticated) { %>
+                    <a href="/dashboard" class="btn btn-primary btn-lg">Ir al Dashboard</a>
+                <% } else { %>
+                    <a href="/login" class="btn btn-primary btn-lg">Crear cuenta gratis</a>
+                <% } %>
+            </div>
+        </div>
+    </section>
 
-    <script src="/js/landing.js"></script>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="section-container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <span class="footer-logo">AUSTRA</span>
+                    <p class="footer-tagline">Tu super app para Uruguay.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-col">
+                        <h4 class="footer-col-title">Plataforma</h4>
+                        <a href="/dashboard">Dashboard</a>
+                        <a href="/forum">Foro</a>
+                        <a href="/pricing">Planes</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4 class="footer-col-title">Legal</h4>
+                        <a href="/privacy">Privacidad</a>
+                        <a href="/terms">Terminos</a>
+                        <a href="mailto:info.austra@protonmail.com">Contacto</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; <%= new Date().getFullYear() %> Austra, una empresa de <a href="https://dokta.cc/" target="_blank" rel="noopener noreferrer">DOKTA</a>. Hecho en Uruguay.</span>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Hamburger menu functionality
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            const dropdownMenu = document.getElementById('dropdownMenu');
-
-            if (hamburgerBtn && dropdownMenu) {
-                // Toggle menu on button click
-                hamburgerBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const isActive = dropdownMenu.classList.toggle('active');
-                    hamburgerBtn.setAttribute('aria-expanded', isActive);
-                });
-
-                // Close menu when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!hamburgerBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                        dropdownMenu.classList.remove('active');
-                        hamburgerBtn.setAttribute('aria-expanded', 'false');
+        // Scroll-triggered fade-in animations
+        (function() {
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('aos-visible');
+                        observer.unobserve(entry.target);
                     }
                 });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-                // Close menu when clicking on a menu item
-                dropdownMenu.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', function() {
-                        dropdownMenu.classList.remove('active');
-                        hamburgerBtn.setAttribute('aria-expanded', 'false');
-                    });
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('[data-aos]').forEach(function(el) {
+                    observer.observe(el);
                 });
+            });
+        })();
 
-                // Close menu on ESC key
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && dropdownMenu.classList.contains('active')) {
-                        dropdownMenu.classList.remove('active');
-                        hamburgerBtn.setAttribute('aria-expanded', 'false');
-                        hamburgerBtn.focus();
-                    }
-                });
+        // Simulated live stats (replace with real API calls)
+        (function() {
+            function animateValue(el, value) {
+                if (el) el.textContent = value;
             }
+            // Placeholder values - connect to your real data endpoints
+            setTimeout(function() {
+                animateValue(document.getElementById('stat-usd'), '$41.20');
+                animateValue(document.getElementById('stat-usd-sell'), '$43.50');
+                animateValue(document.getElementById('stat-temp'), '18°C');
+                animateValue(document.getElementById('stat-btc'), '$67,240');
+            }, 800);
+        })();
 
-            // Logout handler - simplificado
-            const logoutLinks = document.querySelectorAll('a[href="/auth/logout"]');
-            logoutLinks.forEach(link => {
+        // Hamburger / logout handlers for authenticated users
+        document.addEventListener('DOMContentLoaded', function() {
+            var logoutLinks = document.querySelectorAll('a[href="/auth/logout"]');
+            logoutLinks.forEach(function(link) {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     localStorage.clear();
