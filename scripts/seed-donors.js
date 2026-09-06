@@ -17,7 +17,7 @@ dotenv.config({ path: join(__dirname, '..', '.env') });
 
 const initialDonors = [
   {
-    name: 'Bruno Silveira',
+    name: 'missingus3r',
     amount: 150,
     currency: 'USD',
     date: 'Enero 2025',
